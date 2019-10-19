@@ -1,1 +1,15 @@
 Piece of your heart
+
+#include <iostream>
+using namespace std;
+#include <ctime>
+int main()
+{
+	setlocale(LC_ALL, "Russian");
+	
+}
+
+
+
+
+
