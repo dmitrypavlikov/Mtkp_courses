@@ -33,40 +33,45 @@ int move()
 	{
 		for (int x = 0;x < 5;x++)
 		{
-			if (mass[x][y] == '@')
+			if (mass[y][x] == '@')
 			{
+				
 				if (step == 119)
 				{
-					if (mass[x][y-1] != '#')
+					if (mass[y-1][x] != '#')
 					{
-						swap(mass[x][y], mass[x][y - 1]);
+						swap(mass[y][x], mass[y-1][x]);
 						map();
 					}
+					
 				}
 				if (step == 115)
 				{
-					if (mass[x][y+1] != '#')
+					if (mass[y+1][x] != '#')
 					{
-						swap(mass[x][y], mass[x][y + 1]);
+						
+						swap(mass[y][x], mass[y+1][x]);
 						map();
 						
-						break;
+						step = 0;
+						
+						
 						
 					}
 				}
 				if (step == 97)
 				{ 
-					if (mass[x-1][y] != '#')
+					if (mass[y][x-1] != '#')
 					{
-						swap(mass[x][y], mass[x - 1][y]);
+						swap(mass[y][x], mass[y][x-1]);
 						map();
 					}
 				}
 				if (step == 100)
 				{
-					if (mass[x+1][y] != '#')
+					if (mass[y][x+1] != '#')
 					{
-						swap(mass[x][y], mass[x + 1][y]);
+						swap(mass[y][x], mass[y][x+1]);
 						map();
 						
 						break;
@@ -76,9 +81,11 @@ int move()
 			}
 			
 		}
+	
 		
 		
     }
+	return 0;
 }
 
 int main()
