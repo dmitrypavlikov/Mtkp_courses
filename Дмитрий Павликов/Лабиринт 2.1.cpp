@@ -1,4 +1,4 @@
-﻿#include <iostream>
+#include <iostream>
 #include <conio.h>
 
 
@@ -49,6 +49,9 @@ int move()
 					{
 						swap(mass[x][y], mass[x][y + 1]);
 						map();
+						
+						break;
+						
 					}
 				}
 				if (step == 97)
@@ -65,15 +68,17 @@ int move()
 					{
 						swap(mass[x][y], mass[x + 1][y]);
 						map();
+						
+						break;
 					}
 				}
 				
 			}
+			
 		}
-	
+		
+		
     }
-
-	return 0;
 }
 
 int main()
@@ -88,5 +93,7 @@ int main()
 	}
 
 }
+
+
 
 
