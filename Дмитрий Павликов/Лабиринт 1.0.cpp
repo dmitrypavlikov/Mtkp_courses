@@ -24,6 +24,58 @@ int map()
 		cout << endl;
 	}
 	return 0;
+}int up(int y,int x)
+{
+	if (step == 119)
+	{
+		if (mass[y - 1][x] != '#')
+		{
+			swap(mass[y][x], mass[y - 1][x]);
+			map();
+		}
+
+	}
+	return 0;
+}
+int down(int y,int x)
+{
+	if (step == 115)
+	{
+		if (mass[y + 1][x] != '#')
+		{
+
+			swap(mass[y][x], mass[y + 1][x]);
+			map();
+
+			step = 0;
+		}
+	}
+	return 0;
+}
+int right(int y, int x)
+{
+	if (step == 100)
+	{
+		if (mass[y][x + 1] != '#')
+		{
+			swap(mass[y][x], mass[y][x + 1]);
+			map();
+			step = 0;
+		}
+	}
+	return 0;
+}
+int left(int y, int x)
+{
+	if (step == 97)
+	{
+		if (mass[y][x - 1] != '#')
+		{
+			swap(mass[y][x], mass[y][x - 1]);
+			map();
+		}
+	}
+	return 0;
 }
 
 int move()
@@ -36,47 +88,10 @@ int move()
 			if (mass[y][x] == '@')
 			{
 				
-				if (step == 119)
-				{
-					if (mass[y-1][x] != '#')
-					{
-						swap(mass[y][x], mass[y-1][x]);
-						map();
-					}
-					
-				}
-				if (step == 115)
-				{
-					if (mass[y+1][x] != '#')
-					{
-						
-						swap(mass[y][x], mass[y+1][x]);
-						map();
-						
-						step = 0;
-						
-						
-						
-					}
-				}
-				if (step == 97)
-				{ 
-					if (mass[y][x-1] != '#')
-					{
-						swap(mass[y][x], mass[y][x-1]);
-						map();
-					}
-				}
-				if (step == 100)
-				{
-					if (mass[y][x+1] != '#')
-					{
-						swap(mass[y][x], mass[y][x+1]);
-						map();
-						
-						break;
-					}
-				}
+				up(y,x);
+				down(y, x);
+				left(y, x);
+				right(y, x);
 				
 			}
 			
@@ -87,6 +102,7 @@ int move()
     }
 	return 0;
 }
+
 
 int main()
 {
