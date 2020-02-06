@@ -1,0 +1,175 @@
+#include <QTRSensors.h>
+#include "MeMegaPi.h"
+////////////////////////////////////////////
+MeMegaPiDCMotor motorLeft(PORT3B);
+MeMegaPiDCMotor motorRight(PORT4B);
+//PORT3B//left wheel
+//PORT4B//right
+MeEncoderOnBoard Encoder_L(SLOT3);
+MeEncoderOnBoard Encoder_R(SLOT4);
+uint8_t del = 0;
+uint8_t line = 50;
+uint8_t spd = 40;
+////////////////////////////////////////
+#define NUM_SENSORS             8  // number of sensors used
+#define NUM_SAMPLES_PER_SENSOR  4  // average 4 analog samples per sensor reading
+
+QTRSensorsAnalog qtra((unsigned char[]) {
+  6, 7, 8, 9, 10, 11, 12, 13
+},
+NUM_SENSORS, NUM_SAMPLES_PER_SENSOR);
+unsigned int sensorValues[NUM_SENSORS];
+///////////////////////////////////////
+void isr_process_encoder1(void)
+{
+  if (digitalRead(Encoder_L.getPortB()) == 0)
+  {
+    Encoder_L.pulsePosMinus();
+  }
+  else
+  {
+    Encoder_L.pulsePosPlus();
+  }
+}
+
+void isr_process_encoder2(void)
+{
+  if (digitalRead(Encoder_R.getPortB()) == 0)
+  {
+    Encoder_R.pulsePosMinus();
+  }
+  else
+  {
+    Encoder_R.pulsePosPlus();
+  }
+}
+////////////////////////////////////////////
+////////////////////////////////////////////
+
+
+void setup()
+{
+  Serial.begin(9600);
+  attachInterrupt(Encoder_L.getIntNum(), isr_process_encoder1, RISING);
+  attachInterrupt(Encoder_R.getIntNum(), isr_process_encoder2, RISING);
+  /*float spd=0.3;//
+    float spd1=spd/0.00285;
+    float m =0.25;/m*371*5*/
+
+}
+
+void loop()
+{
+  qtra.read(sensorValues);
+  Encoder_L.loop();
+  Encoder_R.loop();
+
+  ///////////////////////////////////////////
+  int sV[8] = {sensorValues[0], sensorValues[1], sensorValues[2], sensorValues[3], sensorValues[4], sensorValues[5], sensorValues[6], sensorValues[7]};
+
+
+
+  ///////////////////////////////////////////
+  /////////////Показания с датчика и инкодера
+  ///////////////////////////////////////////
+
+  /*    for ( char i = 0; i < NUM_SENSORS; i++)
+    {
+     int x = sV[i];
+     if(x>line)
+     {
+       Serial.print("Black");
+       Serial.print('\t');
+       }
+       else
+       {
+         Serial.print("White");
+         Serial.print('\t');
+       }
+
+    }*/
+
+  for ( char i = 0; i < NUM_SENSORS; i++)
+  {
+    Serial.print(sensorValues[i]);
+    Serial.print('\t');
+  }
+
+  Serial.print(-Encoder_L.getCurPos());
+  Serial.print("   ");
+  Serial.println(-Encoder_R.getCurPos());
+
+
+  /////////////////////////////////////////////////////
+  /////////////////////////////////////////////////////
+  /////////////////////////////////////////////////////
+
+  if ((sV[0] > line) || (sV[1] > line) || (sV[2] > line) || (sV[3] > line) || (sV[4] > line) || (sV[5] > line) || (sV[6] > line) || (sV[7] > line))
+  {
+    if ((sV[3] > line) || (sV[4] > line))
+    {
+      motorLeft.run(-spd);
+      motorRight.run(spd);
+    }
+
+    if ((sV[1] > line) || (sV[2] > line))
+    {
+      do
+      {
+        delay(del);
+        motorLeft.run(-spd);
+        motorRight.run(spd + 50);
+      }
+      while ((sV[3] || sV[4]) < line);
+    }
+
+    if ((sV[5] > line) || (sV[6] > line))
+    {
+      do
+      {
+        delay(del);
+        motorLeft.run(-spd - 50);
+        motorRight.run(spd);
+      }
+      while ((sV[3] || sV[4]) < line);
+    }
+
+
+    if (sV[0] > line)
+    {
+      do
+      {
+      delay(del);
+      motorLeft.run(-spd);
+      motorRight.run(spd + 75);
+      }
+      while ((sV[3] || sV[4]) < line);
+    }
+
+    if (sV[7] > line)
+    { 
+      do
+      {
+      delay(del);
+      motorLeft.run(-spd - 75);
+      motorRight.run(spd);
+      }
+      while((sV[3] || sV[4]) < line);
+    }
+  }
+  
+  else
+  {
+    motorLeft.stop();
+    motorRight.stop();
+  }
+
+
+
+
+
+  delay(250);
+
+
+
+}
